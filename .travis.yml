@@ -1,0 +1,27 @@
+env:
+  global:
+    # DOCKERHUB_TRIGGER_TOKEN to trigger a build on dockerhub
+    secure: "3VMb8L4w2LyH+gjxR7EYlihLHl/qGGCdDSqBPFN76ntcTs/X3lpXvBJO0q27rddDoSE4KPP6WtiW+r9M2vBLVkoW/lwIBwJLCmvakisJlCysQjyTHOuk1TTBAazHLwgjaPqdF7CTiRBBkf9gwcvOsotkfvXCLbTmDDVIA7ZYYN9oidy9SecBi6gDvJLwndL+z+qkP9wgBrhIXXhA2aUssoRgnE2eof2u66op98hMc52XPLrXHwkCKYjARget3cuaCGIR3+5v+i+9Fq7lo7M4rxcaaF5Fy9+U/JR/y5P2dnM1Btlws9OSxRgEKdhefPmy6BRfPUYCvyb0Bb2WuT/yyk6SNpCyQBgunhDTXlz9KkhemZwjwP3iJ+AR0frhcDv5omaYirQHWf4UdCxEmCU+8mC78Liro8wh/jCKHylM3KF9nnm2mB6GQPzjDr/9u5shfk68x/fWZXSqUzv5+kmqISOGZsRh6t8yjhlRyoErLCNpSfws1ggF7ABby3Seoo94w9Y7u4sd3alpb95zrtrH8D6xzY04d8zCs5xlPqVTaBQGYJCYcfvWnM6wTAl4Kn6LAKyUBjhG2MlivxTADaWB8AiVWXTqwtO7p5FdBhH2qh4hQUi39eq+gUvGblYOQkz9xASgDEJ2aZDj/h2AeIEje5WSNjwOOoWJZ9fKGAM7/AQ="
+
+branches:
+  only:
+    - master
+
+language: node_js
+node_js:
+  - '4'
+
+sudo: required
+services:
+  - docker
+
+install:
+  - npm install
+  - make build
+
+script:
+  - make lint
+  - make test
+
+after_success:
+  - curl -XPOST https://registry.hub.docker.com/u/fluxs/cairo-worker/trigger/"$DOCKERHUB_TRIGGER_TOKEN"/
